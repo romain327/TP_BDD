@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS contient;
 -- nom_etudiant correspond au nom de l'étudiant
 -- prenom_etudiant correspond au prénom de l'étudiant
 CREATE TABLE Utilisateur(
-   id_etudiant INT PRIMARY KEY NOT NULL,
+   id_etudiant INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
    nom_etudiant VARCHAR(50) NOT NULL,
    prenom_etudiant VARCHAR(50) NOT NULL,
    email VARCHAR(50) NOT NULL
@@ -107,13 +107,86 @@ INSERT INTO contient (id_materiel, id_reservation) VALUES
 ## Exercice 2
 ```
 SELECT * FROM utilisateur WHERE email LIKE "%example%";
+
 SELECT designation_materiel FROM materiel WHERE type = "Informatique";
+
 SELECT * FROM reservation WHERE date_debut > "2024-03-22";
 ```
 
 ## Exercice 3
 ```
 SELECT nom_etudiant, prenom_etudiant, date_debut, date_fin FROM utilisateur INNER JOIN reservation USING(id_etudiant);
+
 SELECT designation_materiel, date_debut, date_fin FROM materiel INNER JOIN contient USING(id_materiel) INNER JOIN reservation USING(id_reservation);
+
 SELECT nom_etudiant, prenom_etudiant, designation_materiel FROM utilisateur INNER JOIN reservation USING(id_etudiant) INNER JOIN contient USING(id_reservation) INNER JOIN materiel USING(id_materiel);
+
+SELECT * FROM materiel INNER JOIN contient USING(id_materiel) INNER JOIN reservation USING(id_materiel) INNER JOIN utilisateur USING(id_etudiant) WHERE nom_etudiant = "Johnson";
+```
+
+## EXERCICE 4
+```
+SELECT COUNT(*) FROM reservation WHERE date_debut > "2024-03-22" AND date_fin < "2024-03-29";
+
+SELECT COUNT(DISTINCT id_etudiant) FROM reservation;
+```
+
+## EXERCICE 5
+```
+UPDATE materiel SET quantite = 10 WHERE type = "Informatique";
+UPDATE contient SET id_materiel = 2 WHERE id_reservation = 1;
+```
+
+## EXERCICE 6
+```
+DELETE FROM materiel WHERE id_materiel = 9;
+DELETE FROM contient WHERE id_reservation = 1;
+DELETE FROM reservation WHERE id_etudiant = 1;
+DELETE FROM utilisateur WHERE id_etudiant = 1;
+```
+
+## EXERCICE 7
+### QUESTION 1
+```
+SELECT DISTINCT id_etudiant, nom_etudiant, prenom_etudiant FROM utilisateur INNER JOIN reservation USING(id_etudiant);
+```
+
+### QUESTION 2
+```
+SELECT id_materiel, designation_materiel FROM materiel WHERE id_materiel NOT IN (SELECT id_materiel FROM contient);
+```
+
+### QUESTION 3
+```
+SELECT id_materiel, designation_materiel FROM materiel WHERE nb<=3 IN (SELECT materiel.id_materiel, COUNT(contient.id_materiel) as nb FROM materiel LEFT JOIN contient USING(id_materiel) GROUP BY materiel.id_materiel);
+```
+
+### QUESTION 4
+```
+SELECT utilisateur.id_etudiant, nom_etudiant, prenom_etudiant, COUNT(reservation.id_etudiant) as nb_reservation FROM utilisateur LEFT JOIN reservation USING(id_etudiant) GROUP BY utilisateur.id_etudiant
+```
+
+## EXERCICE 8
+### QUESTION 1
+```
+CREATE TABLE Disponibilite(
+   id_disponibilite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+   date_debut VARCHAR(50) NOT NULL,
+   date_fin VARCHAR(50) NOT NULL,
+   id_materiel INT NOT NULL,
+   FOREIGN KEY(id_materiel) REFERENCES Materiel(id_materiel)
+);
+```
+
+### QUESTION 2
+```
+ALTER TABLE Reservation
+ADD COLUMN id_disponibilite INT NOT NULL,
+ADD CONSTRAINT fk_disponibilite
+FOREIGN KEY (id_disponibilite) REFERENCES Disponibilite(id_disponibilite);
+```
+
+### QUESTION 3
+```
+
 ```
