@@ -15,9 +15,9 @@ CREATE TRIGGER before_insert_reservation
     BEFORE INSERT ON reservation
     FOR EACH ROW
 BEGIN
-    DECLARE id_disp INT;
+    DECLARE id_disponibilite INT;
     IF NEW.date_debut IS NOT NULL AND NEW.date_fin IS NOT NULL AND NEW.id_materiel IS NOT NULL THEN
-        SET id_disp = (SELECT id_disponibilite FROM disponibilite WHERE date_debut = NEW.date_debut AND date_fin = NEW.date_fin AND id_materiel = NEW.id_materiel);
+        SET id_disponibilite = (SELECT id_disponibilite FROM disponibilite WHERE date_debut = NEW.date_debut AND date_fin = NEW.date_fin AND id_materiel = NEW.id_materiel);
             IF id_disponibilite IS NULL THEN
                 INSERT INTO disponibilite (date_debut, date_fin, id_materiel) VALUES (NEW.date_debut, NEW.date_fin, NEW.id_materiel);
                 SET id_disponibilite = LAST_INSERT_ID();

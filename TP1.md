@@ -1,8 +1,12 @@
 # TP1 SQL
 ## Analyse
-On doit permettre à des étudiants de réserver du matériel. On a donc besoin de deux tables : une table Etudiant qui va comporter le numéro d'étudiant en id, ainsi que le nom et prénom de l'étudiant, et une table matériel avec un id ainsi que le nom du matériel.
-On doit aussi définir des dates de début et fin de réservation. Pour ça on va avoir une troisième table réservation qui va contenir ces dates.
-On a donc un utilisateur, qui peut effectuer des réservations, qui vont contenir du matériel.
+On doit permettre à des étudiants de réserver du matériel. 
+On a donc besoin de deux tables : 
+- utilisateur qui va comporter le numéro d'étudiant en id, ainsi que le nom, prénom et email de l'étudiant.
+- matériel avec un id ainsi que le nom du matériel, la quantité disponible, une description et un type de matériel.
+On doit aussi définir des dates de début et fin de réservation. Pour ça on va avoir une table réservation qui va contenir ces dates, ainsi que l'id de l'étudiant qui a effectué la réservation, en clé étrangère.
+Enfin, chaque réservation va contenir du matériel, on va donc créer une table contient qui va contenir l'id du matériel et l'id de la réservation.
+Tout cela nous donne les MCD et MLD ci-dessous:
 ## MCD, MLD
 ![MCD](img/mcd.PNG "MCD")
 ![MLD](img/mld.PNG "MLD")
@@ -97,11 +101,15 @@ INSERT INTO reservation (date_debut, date_fin, id_etudiant) VALUES
 
 
 INSERT INTO contient (id_materiel, id_reservation) VALUES
-(1, 1), -- Matériel 1 inclus dans la réservation 1
-(2, 2), -- Matériel 2 inclus dans la réservation 2
-(3, 3), -- Matériel 3 inclus dans la réservation 3
-(4, 4), -- Matériel 4 inclus dans la réservation 4
-(5, 5); -- Matériel 5 inclus dans la réservation 5
+    (1, 1), -- Matériel 1 inclus dans la réservation 1
+    (2, 1) -- Matériel 2 inclus dans la réservation 1
+    (3, 1), -- Matériel 3 inclus dans la réservation 2
+    (2, 2), -- Matériel 2 inclus dans la réservation 2
+    (3, 3), -- Matériel 3 inclus dans la réservation 3
+    (4, 4), -- Matériel 4 inclus dans la réservation 4
+    (5, 5), -- Matériel 5 inclus dans la réservation 5
+    (2, 5), -- Matériel 2 inclus dans la réservation 5
+    (2, 4); -- Matériel 2 inclus dans la réservation 4
 ```
 
 ## Exercice 2
@@ -158,7 +166,7 @@ SELECT id_materiel, designation_materiel FROM materiel WHERE id_materiel NOT IN 
 
 ### QUESTION 3
 ```
-SELECT id_materiel, designation_materiel FROM materiel INNER JOIN contient USING(id_materiel) GROUP BY id_materiel HAVING COUNT(*) > 3;
+SELECT id_materiel, designation_materiel, COUNT(*) FROM materiel INNER JOIN contient USING(id_materiel) GROUP BY id_materiel HAVING COUNT(*) > 3;
 ```
 
 ### QUESTION 4

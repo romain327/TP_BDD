@@ -76,10 +76,13 @@ INSERT INTO reservation (date_debut, date_fin, id_etudiant) VALUES
     ('2024-03-23', '2024-03-29', 4), -- Emily Brown réserve du 23 au 29 mars
     ('2024-03-24', '2024-03-26', 5); -- James Taylor réserve du 24 au 26 mars
 
-
 INSERT INTO contient (id_materiel, id_reservation) VALUES
     (1, 1), -- Matériel 1 inclus dans la réservation 1
+    (2, 1) -- Matériel 2 inclus dans la réservation 1
+    (3, 1), -- Matériel 3 inclus dans la réservation 2
     (2, 2), -- Matériel 2 inclus dans la réservation 2
     (3, 3), -- Matériel 3 inclus dans la réservation 3
     (4, 4), -- Matériel 4 inclus dans la réservation 4
-    (5, 5); -- Matériel 5 inclus dans la réservation 5
+    (5, 5), -- Matériel 5 inclus dans la réservation 5
+    (2, 5), -- Matériel 2 inclus dans la réservation 5
+    (2, 4); -- Matériel 2 inclus dans la réservation 4
