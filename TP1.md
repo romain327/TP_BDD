@@ -2,25 +2,25 @@
 ## Analyse
 On doit permettre à des étudiants de réserver du matériel. On a donc besoin de deux tables : une table Etudiant qui va comporter le numéro d'étudiant en id, ainsi que le nom et prénom de l'étudiant, et une table matériel avec un id ainsi que le nom du matériel.
 On doit aussi définir des dates de début et fin de réservation. Pour ça on va avoir une troisième table réservation qui va contenir ces dates.
-On a donc un utilisateur, qui peut éffectuer des réservations, qui vont contenir du matériel.
+On a donc un utilisateur, qui peut effectuer des réservations, qui vont contenir du matériel.
 ## MCD, MLD
 ![MCD](img/mcd.PNG "MCD")
 ![MLD](img/mld.PNG "MLD")
 
 ## Création des tables
 ```
-CREATE DATABASE IF NOT EXISTS tp1;
-USE tp1;
-DROP TABLE IF EXISTS Utilisateur;
-DROP TABLE IF EXISTS Materiel;
-DROP TABLE IF EXISTS Reservation;
+CREATE DATABASE IF NOT EXISTS tp1_3a;
+USE tp1_3a;
+DROP TABLE IF EXISTS utilisateur;
+DROP TABLE IF EXISTS materiel;
+DROP TABLE IF EXISTS reservation;
 DROP TABLE IF EXISTS contient;
 
 -- TABLE UTILISATEUR
 -- id_etudiant correspond au numéro d'étudiant
 -- nom_etudiant correspond au nom de l'étudiant
 -- prenom_etudiant correspond au prénom de l'étudiant
-CREATE TABLE Utilisateur(
+CREATE TABLE utilisateur(
    id_etudiant INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
    nom_etudiant VARCHAR(50) NOT NULL,
    prenom_etudiant VARCHAR(50) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE Utilisateur(
 -- TABLE MATERIEL
 -- id_materiel correspond a l'id du matériel, qui sera auto incrémenté
 -- designation correspond au nom du matériel (ex : capteur de température TC74)
-CREATE TABLE Materiel(
+CREATE TABLE materiel(
    id_materiel INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
    designation_materiel VARCHAR(50) NOT NULL,
    quantite VARCHAR(50),
@@ -40,20 +40,20 @@ CREATE TABLE Materiel(
 
 -- TABLE DE RESERVATION
 -- présence des dates de début et fin de la réservation du matériel
-CREATE TABLE Reservation(
+CREATE TABLE reservation(
    id_reservation INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-   date_debut VARCHAR(50) NOT NULL,
-   date_fin VARCHAR(50) NOT NULL,
+   date_debut DATE NOT NULL,
+   date_fin DATE NOT NULL,
    id_etudiant INT NOT NULL,
-   FOREIGN KEY(id_etudiant) REFERENCES Utilisateur(id_etudiant)
+   FOREIGN KEY(id_etudiant) REFERENCES utilisateur(id_etudiant)
 );
 
 CREATE TABLE contient(
    id_materiel INT,
    id_reservation INT,
    PRIMARY KEY(id_materiel, id_reservation),
-   FOREIGN KEY(id_materiel) REFERENCES Materiel(id_materiel),
-   FOREIGN KEY(id_reservation) REFERENCES Reservation(id_reservation)
+   FOREIGN KEY(id_materiel) REFERENCES materiel(id_materiel),
+   FOREIGN KEY(id_reservation) REFERENCES reservation(id_reservation)
 );
 ```
 
@@ -74,21 +74,21 @@ INSERT INTO utilisateur (id_etudiant, nom_etudiant, prenom_etudiant, email) VALU
 ```
 ### Question 2
 ```
-INSERT INTO materiel (designation_materiel, quantite, description, type) VALUES
-('Ordinateur portable', 20, 'Ordinateur portable de dernière génération', 'Informatique'),
-('Imprimante', 15, 'Imprimante laser couleur', 'Informatique'),
-('Projecteur', 10, 'Projecteur HD pour présentations', 'Électronique'),
-('Perceuse', 8, 'Perceuse électrique sans fil', 'Outils'),
-('Scie circulaire', 12, 'Scie circulaire professionnelle', 'Outils'),
-('Caméra', 5, 'Caméra haute définition pour la vidéo-surveillance', 'Électronique'),
-('Microphone', 10, 'Microphone professionnel pour enregistrements audio', 'Audio'),
-('Casque audio', 20, 'Casque audio sans fil avec réduction de bruit', 'Audio'),
-('Tablette graphique', 7, 'Tablette graphique pour dessin numérique', 'Informatique'),
-('Câble HDMI', 50, 'Câble HDMI haute vitesse', 'Accessoire')
+INSERT INTO materiel (id_materiel, designation_materiel, quantite, description, type) VALUES
+(1, 'Ordinateur portable', 20, 'Ordinateur portable de dernière génération', 'Informatique'),
+(2, 'Imprimante', 15, 'Imprimante laser couleur', 'Informatique'),
+(3, 'Projecteur', 10, 'Projecteur HD pour présentations', 'Électronique'),
+(4, 'Perceuse', 8, 'Perceuse électrique sans fil', 'Outils'),
+(5, 'Scie circulaire', 12, 'Scie circulaire professionnelle', 'Outils'),
+(6, 'Caméra', 5, 'Caméra haute définition', 'Électronique'),
+(7, 'Microphone', 10, 'Microphone professionnel', 'Audio'),
+(8, 'Casque audio', 20, 'Casque audio sans fil avec réduction de bruit', 'Audio'),
+(9, 'Tablette graphique', 7, 'Tablette graphique pour dessin numérique', 'Informatique'),
+(10, 'Câble HDMI', 50, 'Câble HDMI haute vitesse', 'Accessoire');
 ```
 ### Question 3
 ```
-INSERT INTO Reservation (date_debut, date_fin, id_etudiant) VALUES
+INSERT INTO reservation (date_debut, date_fin, id_etudiant) VALUES
 ('2024-03-20', '2024-03-25', 1), -- John Doe réserve du 20 au 25 mars
 ('2024-03-21', '2024-03-28', 2), -- Alice Smith réserve du 21 au 28 mars
 ('2024-03-22', '2024-03-27', 3), -- Michael Johnson réserve du 22 au 27 mars
@@ -121,7 +121,7 @@ SELECT designation_materiel, date_debut, date_fin FROM materiel INNER JOIN conti
 
 SELECT nom_etudiant, prenom_etudiant, designation_materiel FROM utilisateur INNER JOIN reservation USING(id_etudiant) INNER JOIN contient USING(id_reservation) INNER JOIN materiel USING(id_materiel);
 
-SELECT * FROM materiel INNER JOIN contient USING(id_materiel) INNER JOIN reservation USING(id_materiel) INNER JOIN utilisateur USING(id_etudiant) WHERE nom_etudiant = "Johnson";
+SELECT * FROM materiel INNER JOIN contient USING(id_materiel) INNER JOIN reservation USING(id_reservation) INNER JOIN utilisateur USING(id_etudiant) WHERE nom_etudiant = "Johnson";
 ```
 
 ## EXERCICE 4
@@ -158,7 +158,7 @@ SELECT id_materiel, designation_materiel FROM materiel WHERE id_materiel NOT IN 
 
 ### QUESTION 3
 ```
-SELECT id_materiel, designation_materiel FROM materiel WHERE nb<=3 IN (SELECT materiel.id_materiel, COUNT(contient.id_materiel) as nb FROM materiel LEFT JOIN contient USING(id_materiel) GROUP BY materiel.id_materiel);
+SELECT id_materiel, designation_materiel FROM materiel INNER JOIN contient USING(id_materiel) GROUP BY id_materiel HAVING COUNT(*) > 3;
 ```
 
 ### QUESTION 4
@@ -169,7 +169,7 @@ SELECT utilisateur.id_etudiant, nom_etudiant, prenom_etudiant, COUNT(reservation
 ## EXERCICE 8
 ### QUESTION 1
 ```
-CREATE TABLE Disponibilite(
+CREATE TABLE disponibilite(
    id_disponibilite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
    date_debut VARCHAR(50) NOT NULL,
    date_fin VARCHAR(50) NOT NULL,
@@ -188,5 +188,20 @@ FOREIGN KEY (id_disponibilite) REFERENCES Disponibilite(id_disponibilite);
 
 ### QUESTION 3
 ```
-
+CREATE TRIGGER before_insert_reservation 
+BEFORE INSERT ON reservation 
+FOR EACH ROW
+BEGIN
+    DECLARE id_disp INT;
+        IF NEW.date_debut IS NOT NULL AND NEW.date_fin IS NOT NULL AND NEW.id_materiel IS NOT NULL THEN
+        SET id_disp = (SELECT id_disponibilite FROM disponibilite WHERE date_debut = NEW.date_debut AND date_fin = NEW.date_fin AND id_materiel = NEW.id_materiel);
+            IF id_disponibilite IS NULL THEN
+                INSERT INTO disponibilite (date_debut, date_fin, id_materiel) VALUES (NEW.date_debut, NEW.date_fin, NEW.id_materiel);
+                SET id_disponibilite = LAST_INSERT_ID();
+        	ELSE
+            	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La réservation existe déjà';
+   		    END IF;
+   SET NEW.id_disponibilite = id_disponibilite;
+   END IF;
+END;
 ```
